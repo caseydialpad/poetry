@@ -6,8 +6,6 @@ from cleo.helpers import option
 
 from .command import Command
 
-from poetry.installation.authenticator import Authenticator
-
 
 class PublishCommand(Command):
 
