@@ -1,9 +1,12 @@
+import logging
 from pathlib import Path
 from typing import Optional
 
 from cleo.helpers import option
 
 from .command import Command
+
+from poetry.installation.authenticator import Authenticator
 
 
 class PublishCommand(Command):
@@ -75,10 +78,26 @@ the config command.
             Path(self.option("client-cert")) if self.option("client-cert") else None
         )
 
+
+        repository_name = self.option("repository")
+        username, password = self.option("username"), self.option("password")
+        if not username and not password:
+            for repository in self.poetry.pool.repositories:
+                try:
+                    if repository_name == repository.name:
+                        auth = repository.auth
+                except AttributeError:
+                    logging.info('Attempted to access name of PyPI repository')
+                else:
+                    if auth:
+                        username = auth.username
+                        password = auth.password
+                        break
+
         publisher.publish(
-            self.option("repository"),
-            self.option("username"),
-            self.option("password"),
+            repository_name,
+            username,
+            password,
             cert,
             client_cert,
             self.option("dry-run"),

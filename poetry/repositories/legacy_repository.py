@@ -218,6 +218,10 @@ class LegacyRepository(PyPiRepository):
         self._disable_cache = disable_cache
 
     @property
+    def auth(self) -> Optional[requests.auth.HTTPBasicAuth]:
+        return self._authenticator.session.auth
+    
+    @property
     def cert(self) -> Optional[Path]:
         return self._cert
 
