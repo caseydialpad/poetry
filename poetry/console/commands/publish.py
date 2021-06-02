@@ -78,7 +78,7 @@ the config command.
 
         repository_name = self.option("repository")
         username, password = self.option("username"), self.option("password")
-        if not username and not password:
+        if repository_name and not username and not password:
             try:
                 repository = self.poetry.pool.repository(repository_name)
                 auth = repository.auth
