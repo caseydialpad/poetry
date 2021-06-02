@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 from typing import Optional
 
@@ -80,17 +79,17 @@ the config command.
         repository_name = self.option("repository")
         username, password = self.option("username"), self.option("password")
         if not username and not password:
-            for repository in self.poetry.pool.repositories:
-                try:
-                    if repository_name == repository.name:
-                        auth = repository.auth
-                except AttributeError:
-                    logging.info('Attempted to access name of PyPI repository')
-                else:
-                    if auth:
-                        username = auth.username
-                        password = auth.password
-                        break
+            try:
+                repository = self.poetry.pool.repository(repository_name)
+                auth = repository.auth
+            except AttributeError as error:
+                raise AttributeError(f'No credentials available for {repository_name}') from error
+            except ValueError as error:
+                raise ValueError(f'No repository named {repository_name} found')
+            else:
+                if auth:
+                    username = auth.username
+                    password = auth.password
 
         publisher.publish(
             repository_name,
