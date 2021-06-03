@@ -220,7 +220,7 @@ class LegacyRepository(PyPiRepository):
     @property
     def auth(self) -> Optional[requests.auth.HTTPBasicAuth]:
         return self._authenticator.session.auth
-    
+
     @property
     def cert(self) -> Optional[Path]:
         return self._cert

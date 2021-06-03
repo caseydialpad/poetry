@@ -75,7 +75,6 @@ the config command.
             Path(self.option("client-cert")) if self.option("client-cert") else None
         )
 
-
         repository_name = self.option("repository")
         username, password = self.option("username"), self.option("password")
         if repository_name and not username and not password:
@@ -83,9 +82,11 @@ the config command.
                 repository = self.poetry.pool.repository(repository_name)
                 auth = repository.auth
             except AttributeError as error:
-                raise AttributeError(f'No credentials available for {repository_name}') from error
-            except ValueError as error:
-                raise ValueError(f'No repository named {repository_name} found')
+                raise AttributeError(
+                    f"No credentials available for {repository_name}"
+                ) from error
+            except ValueError:
+                raise ValueError(f"No repository named {repository_name} found")
             else:
                 if auth:
                     username = auth.username
